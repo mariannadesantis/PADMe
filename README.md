@@ -11,7 +11,7 @@ Therefore, in order to run the code, you need to have installed:
  Bensolve (http://www.bensolve.org/)
 
 
-The repositoty has the following Subdirectories
+The repository has the following subdirectories
 
     1) src : in this subdirectory you find the source code of PADMe. 
 
