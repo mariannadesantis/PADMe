@@ -1,4 +1,4 @@
-function [xk,fxk,zID1k] = milpk_txt2(str,data)
+function [xk,fxk,zID1k] = milpk(str,data)
 
 % This function solves problem MILPk, detecting the new slice problem to 
 %  consider at iteration (k), (i.e. the integer fixings to consider 
