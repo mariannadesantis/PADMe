@@ -136,4 +136,4 @@ fclose(fid);
 copyfile('new.mps','milpk.mps')
 
 %solve MILPk with GUROBI:
-[xk,fxk] = milpk_txt2('milpk.mps','data.txt');
+[xk,fxk] = milpk('milpk.mps','data.txt');
