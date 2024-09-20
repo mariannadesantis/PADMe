@@ -2,28 +2,24 @@
 This repository contains an implementation of PADMe, the algorithm for bi-objective mixed integer linear problems presented in 
 "On the accurate detection of the Pareto frontier for bi-objective mixed integer linear problems" by Lavinia Amorosi and Marianna De Santis
 
-In order to run the code, you need to have installed:
+PADMe alternates the resolution of single-objective mixed integer linear problems (MILPs) with bi-objective continuous linear problems (BOLPs)
+MILPs are solved using the MILP solver Gurobi, while BOLPs are solved using Bensolve.
+
+Therefore, in order to run the code, you need to have installed:
  MATLAB (https://www.mathworks.com)
  Gurobi (https://www.gurobi.com)
  Bensolve (http://www.bensolve.org/)
 
-The repository contains the following files:
 
-1) ... : the main file (in C++)
-   
-2) ... : the header file
-   
-3) writeMPS.m : a MATLAB function that reads the BOMILP instance and writes some .mps files needed to build the MILPs
-   and LPs addressed along the iterations of PADMe.
+The repositoty has the following Subdirectories
 
-4) updateMPS.m : a MATLAB function that builds the problem MILPk in .mps format at each iteration of PADMe.
+    1) src : in this subdirectory you find the source code of PADMe. 
 
-5) milpk.m : a MATLAB function that solves problem MILPk, detecting the new slice problem to consider
+    2) data : in this subdirectory you find the data files needed for the experiments.
 
-6) CompIdeal.m : a MATLAB function that computes the second component of the ideal point (IDk)
-   of the k-th slice problem
+    3) scripts : in this subdirectory you find the the scripts to replicate the experiments in the paper.
 
-7) A binch of .sh files needed to call the MATLAB functions from the C++ main file
-   
+    4) results : in this subdirectory you find the plots from the paper.
 
-To run the code, you need to properly address the libraries within the main C++ file ...
+
+
