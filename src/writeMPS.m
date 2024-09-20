@@ -261,7 +261,7 @@ fclose(mps2_init);
 % objective function evaluated over xID2.
 xId2 = zeros(ncont+nint,1);
 z1Id = 0;
-[xId2,~,~] = milpk_txt2('1_2or.mps','data.txt');
+[xId2,~,~] = milpk('1_2or.mps','data.txt');
 % Compute the value of z_1(x^{id,2})
 for j = 1:ncont+nint
     z1Id = z1Id + f1(j)*xId2(j);
