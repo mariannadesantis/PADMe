@@ -1,6 +1,7 @@
 # PADMe - PAreto Detection Method
 
-An exact/approximate solver for **bi-objective mixed-integer linear programs (BOMILPs)**, implementing the PADMe algorithm (ideal-point-checking variant): each "slice" obtained when integer variables are fixed is a **bi-objective linear program (BOLP)** solved via dichotomic search, and cutting planes derived from previously found solutions are used to skip provably-dominated slices without solving them.
+An exact/approximate solver for **bi-objective mixed-integer linear programs (BOMILPs)**, implementing the PADMe algorithm (ideal-point-checking variant): each "slice" obtained with integer variables fixed is a **bi-objective linear program (BOLP)** solved via dichotomic search.
+Cutting planes are derived from previously found solutions and used to skip provably-dominated slices without solving them.
 
 **Authors:** Lavinia Amorosi, Marianna De Santis
 
@@ -9,10 +10,11 @@ An exact/approximate solver for **bi-objective mixed-integer linear programs (BO
 | File | Role |
 |---|---|
 | `main.cpp` | The algorithm's driver: reads an instance, runs the main branch-and-bound loop over integer fixings, writes the Pareto front to a results file. |
-| `Header.h` | Instance parsing, the results tree (insertion, in-order traversal), and assorted utility functions. |
+| `Header.h` | Instance parsing, the results tree (insertion, in-order traversal), and assorted utility functions. Several functions are taken from the implementation of "Adelgren, N., Belotti, P., & Gupte, A. (2018). "Efficient Storage of Pareto Points in Biobjective Mixed Integer Programming." INFORMS Journal on Computing, 30(2), 324–338"|
 | `GurobiMPS.h` | Gurobi model construction/solving for the MILP subproblems (`updateMPS_and_solve`) and the ideal-point LP (`computeIdealPoint2`), plus the persistent `IterState` used to reuse Gurobi models (and warm starts) across iterations instead of rebuilding from scratch every time. |
 | `dichotomic_search.hpp` | A solver-agnostic, header-only bi-objective dichotomic search algorithm (finds the supported non-dominated extreme points of a bi-objective *linear* problem via a weighted-sum oracle). Not specific to this project — usable standalone against any weighted-sum-solvable oracle. |
-| `BolpDichotomic.h` | Wires `dichotomic_search.hpp` up to Gurobi to solve each BOLP slice. This replaces an earlier design that wrote `.vlp` files to disk and shelled out to [BENSOLVE](http://bensolve.org/); the dichotomic-search approach is mathematically equivalent for this problem class (the image of a polyhedron under a linear map is itself a polyhedron, so the non-dominated frontier of a BOLP slice is exactly its supported extreme points) and runs entirely in-process. |
+| `BolpDichotomic.h` | Wires `dichotomic_search.hpp` up to Gurobi to solve each BOLP slice. This replaces an alternative design that writes `.vlp` files to disk and shelled out to [BENSOLVE](http://bensolve.org/). 
+The dichotomic-search approach is mathematically equivalent for this problem class (the image of a polyhedron under a linear map is itself a polyhedron, so the non-dominated frontier of a BOLP slice is exactly its supported extreme points) and runs entirely in-process. |
 | `Makefile` | Build configuration (see below). |
 
 ## Requirements
@@ -34,7 +36,7 @@ export GUROBI_HOME=/path/to/your/gurobi/install
 make
 ```
 
-This produces an executable named `bomilp`.
+This produces an executable named `padme` (this repo implements the PADMe algorithm).
 
 Other Makefile targets:
 
@@ -62,7 +64,10 @@ Everything else in the Makefile (compiler flags, platform detection for Linux vs
 
 ## Instance file format
 
-Instances are plain-text `.dat` files, read by `readInstance()` in `GurobiMPS.h`. Layout (whitespace-separated on each line):
+Instances are plain-text `.dat` files, read by `readInstance()` in `GurobiMPS.h`.
+We report one example (inst.dat)
+
+Layout (whitespace-separated on each line):
 
 ```
 m                          # number of constraint rows
@@ -87,7 +92,7 @@ nint                       # number of integer/binary variables
 ## Usage
 
 ```bash
-./bomilp <instance_name> <it_index> [budget_fraction] [mip_gap] [verbose]
+./padme <instance_name> <it_index> [budget_fraction] [mip_gap] [verbose]
 ```
 
 | Argument | Required? | Default | Meaning |
@@ -104,22 +109,22 @@ Examples:
 
 ```bash
 # exact run, default MIPGap, verbose progress messages:
-./bomilp my_instance 1
+./padme my_instance 1
 
 # silent run, everything else at defaults:
-./bomilp my_instance 1 1.0 1e-4 0
+./padme my_instance 1 1.0 1e-4 0
 
 # approximate BOLP frontier (20% budget) + looser MIPGap:
-./bomilp my_instance 1 0.2 1e-3
+./padme my_instance 1 0.2 1e-3
 ```
 
 ### Where instance files are read from / results written to
 
-By default, `bomilp` looks for `<instance_name>.dat` (and writes all working/output files) in the **current working directory**. Override this with an environment variable:
+By default, `padme` looks for `<instance_name>.dat` (and writes all working/output files) in the **current working directory**. Override this with an environment variable:
 
 ```bash
 export BOMILP_INSTANCES_DIR=/path/to/your/instances
-./bomilp my_instance 1
+./padme my_instance 1
 ```
 
 ### Output
@@ -135,7 +140,7 @@ Results are written to `<instance_name>_solution_ideal_point.txt` in the instanc
   <wall-clock time> sec
   <N> solved MILPs
   <N> solved BOLPs
-  <N> #MILPs-Dichotomic      (total LP solves performed by dichotomic search, across all BOLPs)
+  <N> LPs-Dichotomic      (total LP solves performed by dichotomic search, across all BOLPs)
   <t> sec MILP solves
   <t> sec BOLP/dichotomic solves
   <t> sec ideal-point LP solves
