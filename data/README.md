@@ -1,11 +1,11 @@
-This folder contains the instances used in the computational experiments discussed in the paper.
+This folder contains one instance, among those used in the computational experiments discussed in the paper.
 
-They have been taken from the repository linked to the paper by Natashia Boland, Hadi Charkhgard, and Martin Savelsbergh. 
+It has been taken from the repository linked to the paper by Natashia Boland, Hadi Charkhgard, and Martin Savelsbergh. 
 "A criterion space search algorithm for biobjective mixed integer programming: The triangle splitting method." 
 INFORMS Journal on Computing, 27(4):597–618, 2015. 
 
 
-Each data file contains the
+The data file contains the
 following information in this order:
 
 • Number of constraints
@@ -25,4 +25,3 @@ following information in this order:
 • Right hand side value of each constraint
 
 • A binary value indicating the type of constraint. A zero means an = constraint and a one means a ≤ constraint.
-
