@@ -12,7 +12,7 @@ Cutting planes are derived from previously found solutions and used to skip prov
 | `main.cpp` | The algorithm's driver: reads an instance, runs the main branch-and-bound loop over integer fixings, writes the Pareto front to a results file. |
 | `Header.h` | Instance parsing, the results tree (insertion, in-order traversal), and assorted utility functions. Several functions are taken from the implementation of "Adelgren, N., Belotti, P., & Gupte, A. (2018). "Efficient Storage of Pareto Points in Biobjective Mixed Integer Programming." INFORMS Journal on Computing, 30(2), 324–338"|
 | `GurobiMPS.h` | Gurobi model construction/solving for the MILP subproblems (`updateMPS_and_solve`) and the ideal-point LP (`computeIdealPoint2`), plus the persistent `IterState` used to reuse Gurobi models (and warm starts) across iterations instead of rebuilding from scratch every time. |
-| `dichotomic_search.hpp` | A solver-agnostic, header-only bi-objective dichotomic search algorithm (finds the supported non-dominated extreme points of a bi-objective *linear* problem via a weighted-sum oracle). Not specific to this project — usable standalone against any weighted-sum-solvable oracle. |
+| `dichotomic_search.hpp` | A solver-agnostic, header-only bi-objective dichotomic search algorithm (finds the supported non-dominated extreme points of a bi-objective *linear* problem via a weighted-sum oracle).|
 | `BolpDichotomic.h` | Wires `dichotomic_search.hpp` up to Gurobi to solve each BOLP slice. This replaces an alternative design that writes `.vlp` files to disk and shelled out to [BENSOLVE](http://bensolve.org/). 
 The dichotomic-search approach is mathematically equivalent for this problem class (the image of a polyhedron under a linear map is itself a polyhedron, so the non-dominated frontier of a BOLP slice is exactly its supported extreme points) and runs entirely in-process. |
 | `Makefile` | Build configuration (see below). |
@@ -47,7 +47,7 @@ make clean              # remove build artifacts
 make print-GRB_LIBS     # debugging helper: print any Makefile variable, e.g. to check what got auto-detected
 ```
 
-**A note on the Gurobi library version:** the Makefile tries to auto-detect the versioned shared library (e.g. `libgurobi110.so`) under `$(GUROBI_HOME)/lib` so you don't have to hardcode a version number. If it can't find one, it fails with a clear error message rather than a wall of missing-header errors — at which point run `ls $GUROBI_HOME/lib` and pass the right one explicitly:
+**A note on the Gurobi library version:** the Makefile tries to auto-detect the versioned shared library (e.g. `libgurobi110.so`) under `$(GUROBI_HOME)/lib` so you don't have to hardcode a version number. If it can't find one, it fails with a clear error message rather than a wall of missing-header errors - at which point run `ls $GUROBI_HOME/lib` and pass the right one explicitly:
 
 ```bash
 make GUROBI_HOME=/path/to/gurobi GRB_VERLIB=gurobi110
@@ -57,8 +57,8 @@ make GUROBI_HOME=/path/to/gurobi GRB_VERLIB=gurobi110
 
 If you're setting this up fresh, the two things you're most likely to need to change are:
 
-1. **`GUROBI_HOME`** — as above. This is intentionally *not* hardcoded anywhere in the Makefile; you supply it via the environment or the command line every time (or add `export GUROBI_HOME=...` to your own shell profile, e.g. `~/.bashrc`, so you don't have to repeat it).
-2. **The instances directory** — see below.
+1. **`GUROBI_HOME`** - as above. This is intentionally *not* hardcoded anywhere in the Makefile; you supply it via the environment or the command line every time (or add `export GUROBI_HOME=...` to your own shell profile, e.g. `~/.bashrc`, so you don't have to repeat it).
+2. **The instances directory** - see below.
 
 Everything else in the Makefile (compiler flags, platform detection for Linux vs. macOS, `rpath` handling so the built binary finds Gurobi's shared library at runtime) should work unmodified.
 
@@ -99,8 +99,8 @@ nint                       # number of integer/binary variables
 |---|---|---|---|
 | `instance_name` | yes | — | Instance file name, without the `.dat` extension. Resolved relative to the instances directory (see below). |
 | `it_index` | yes | — | Selects a small working file, `it<it_index>.txt`, used to carry a bit of state between separate invocations. If it doesn't exist yet in the instances directory, the run just starts fresh — you don't need to create it manually first. |
-| `budget_fraction` | no | `1.0` | Caps how many LP solves dichotomic search may spend per BOLP slice, as a fraction of that slice's number of continuous variables. `1.0` = unlimited (exact frontier). Values in `(0, 1)` trade exactness for speed — see the warning in `BolpDichotomic.h`. |
-| `mip_gap` | no | `1e-4` | Gurobi's `MIPGap` for the MILP subproblems (Gurobi's own default is `1e-4`). Raising it trades exactness for speed — see the warning in `main.cpp` where it's parsed. |
+| `budget_fraction` | no | `1.0` | Caps how many LP solves dichotomic search may spend per BOLP slice, as a fraction of that slice's number of continuous variables. `1.0` = unlimited (exact frontier). Values in `(0, 1)` trade exactness for speed (see the warning in `BolpDichotomic.h`). |
+| `mip_gap` | no | `1e-4` | Gurobi's `MIPGap` for the MILP subproblems (Gurobi's own default is `1e-4`). Raising it trades exactness for speed ( see the warning in `main.cpp`). |
 | `verbose` | no | `1` | `0` = silent, anything else = print progress messages. |
 
 Positional arguments — to set a later one you need to supply the ones before it (use the defaults shown above as placeholders).
@@ -146,7 +146,7 @@ Results are written to `<instance_name>_solution_ideal_point.txt` in the instanc
   <t> sec ideal-point LP solves
   <t> sec other (I/O, bookkeeping)
   ```
-  The last four lines are a wall-clock time breakdown by phase, useful for identifying where time is actually going before tuning anything (in practice, MILP branch-and-bound tends to dominate — see the tuning notes below).
+  The last four lines are a wall-clock time breakdown by phase.
 
 ## Performance tuning notes
 
