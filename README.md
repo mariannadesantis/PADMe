@@ -1,6 +1,6 @@
 # PADMe - PAreto Detection Method
 
-An exact/approximate solver for **bi-objective mixed-integer linear programs (BOMILPs)**, implementing the PADMe algorithm (ideal-point-checking variant): each "slice" obtained with integer variables fixed is a **bi-objective linear program (BOLP)** solved via dichotomic search.
+An exact/approximate solver for **bi-objective mixed-integer linear programs (BOMILPs)**, implementing the PADMe algorithm (ideal-point-checking variant - ID = 1): each "slice" obtained with integer variables fixed is a **bi-objective linear program (BOLP)** solved via dichotomic search.
 Cutting planes are derived from previously found solutions and used to skip provably-dominated slices without solving them.
 
 **Authors:** Lavinia Amorosi, Marianna De Santis
